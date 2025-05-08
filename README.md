@@ -21,7 +21,8 @@
    ```bash
    ./mvnw spring-boot:run
    ```
-6. Access the application API
+6. Access the application API ( Collection is
+   available [here](https://github.com/avighub/bruno-collections/tree/main/kafka-playground) )
     1. POST /api/v1/messages/send - Send to any topic
    ``` bash 
    curl --location 'http://localhost:8080/api/v1/messages/send' \
