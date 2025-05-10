@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class E2ETests {
+public class CreateOrderTests {
 
     private static final String bootstrapServers = "localhost:9092";
     private static final String notificationsTopic = "notifications";
@@ -49,7 +49,7 @@ public class E2ETests {
 
     @Test
     @Tag("integration-test")
-    @Tag("e2e-topic")
+    @Tag("create-order")
     public void testSingleOrder() {
         List<OrderDto> orders = List.of(OrderDto.getInstance());
         List<String> transactionIds = orders.stream()
@@ -82,7 +82,7 @@ public class E2ETests {
 
     @Test
     @Tag("integration-test")
-    @Tag("e2e-topic")
+    @Tag("create-order")
     public void testMultiOrder() {
         List<OrderDto> orders = List.of(OrderDto.getInstance(), OrderDto.getInstance());
         List<String> transactionIds = orders.stream()

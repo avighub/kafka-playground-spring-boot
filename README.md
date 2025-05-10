@@ -2,7 +2,7 @@
 
 1. Clone the repository
    ```bash
-   git clone
+   git clone https://github.com/avighub/kafka-playground-spring-boot
 2. Install dependencies
    ```bash
    cd <project-directory>
@@ -10,54 +10,112 @@
    ```
 3. Setup services via docker
    ```bash
-   docker compose up -d # Start docker and services
-   docker compose down && docker compose up -d # Restarts Docker and Services
+   docker compose up -d # Start services
     ```
 4. Access the application
     1. Access Confluent Control Center UI at: http://localhost:9021
     2. You might not see any topics created yet in the UI. This is because the topics are created dynamically when the
        application starts.
-5. Run Spring boot app
+5. Run Spring boot app ( Once done you can see the topics created in the UI )
    ```bash
    ./mvnw spring-boot:run
    ```
-6. Access the application API ( Collection is
-   available [here](https://github.com/avighub/bruno-collections/tree/main/kafka-playground) )
-    1. POST /api/v1/messages/send - Send to any topic
+6. Access the application API
+    1. Create Order(s)
    ``` bash 
-   curl --location 'http://localhost:8080/api/v1/messages/send' \
-   --header 'Content-Type: application/json' \
-   --data '{
-     "key": "sample-key-1",
-     "value": "This is a test message",
-     "topic": "messages"
-   }'
+    curl --request POST \
+   --url http://localhost:8080/api/v1/order/create \
+   --header 'content-type: application/json' \
+   --data '[
+   {
+   "orderId": "bfc5b215-29b6-4988-8a1f-08423f0acdf1",
+   "transactionId": "8e7ed790-08f8-4e7c-bdbe-f87a9c4a2bbc",
+   "customerEmail": "",
+   "shippingAddress": "123 Main St, Springfield, USA",
+   "totalAmount": 99.99,
+   "paymentMethod": "CREDIT_CARD"
+   },
+   {
+   "orderId": "bfc5b215-29b6-4988-8a1f-08423f0acdf2",
+   "transactionId": "8e7ed790-08f8-4e7c-bdbe-f87a9c4a2bbb",
+   "customerEmail": "",
+   "shippingAddress": "123 Main St, Springfield, USA",
+   "totalAmount": 100,
+   "paymentMethod": "CASH"
+   }
+   ]'
    ```
-    2. POST /api/v1/messages/send/message-topic - Send to message topic
-   ``` bash 
-   curl -X POST http://localhost:8080/api/v1/messages/send/message-topic \
-   -H "Content-Type: text/plain" \
-   -d "Hello Kafka Messages Topic!"
-   ```
-    3. POST /api/v1/messages/send/notification-topic - Send to notification topic
+    2. Send message to notifications topic
     ``` bash
-   curl -X POST http://localhost:8080/api/v1/messages/send/notification-topic \
-   -H "Content-Type: application/json" \
-   -d '{
-   "type": "alert",
-   "message": "Server CPU usage high",
-   "priority": "critical"
-   }'
+   curl --request POST \
+   --url http://localhost:8080/api/v1/order/send/notification-topic \
+   --header 'content-type: application/json' \
+   --data '[
+   {
+   "orderId": "bfc5b215-29b6-4988-8a1f-08423f0acdf1",
+   "transactionId": "8e7ed790-08f8-4e7c-bdbe-f87a9c4a2bbc",
+   "customerEmail": "",
+   "shippingAddress": "123 Main St, Springfield, USA",
+   "totalAmount": 99.99,
+   "paymentMethod": "CREDIT_CARD"
+   },
+   {
+   "orderId": "bfc5b215-29b6-4988-8a1f-08423f0acdf2",
+   "transactionId": "8e7ed790-08f8-4e7c-bdbe-f87a9c4a2bbb",
+   "customerEmail": "",
+   "shippingAddress": "123 Main St, Springfield, USA",
+   "totalAmount": 100,
+   "paymentMethod": "CASH"
+   }
+   ]'
    ```
-    4. POST /api/v1/messages/send/audit-topic - Send to audit topic
+    3. Send message to payments topic
    ``` bash
-    curl -X POST http://localhost:8080/api/v1/messages/send/audit-topic \
-   -H "Content-Type: application/json" \
-   -d '{
-   "timestamp": "2023-11-15T14:30:00Z",
-   "userId": "user-123",
-   "action": "DELETE",
-   "entity": "order",
-   "entityId": "order-456"
-   }'
+    curl --request POST \
+   --url http://localhost:8080/api/v1/order/send/payment-topic \
+   --header 'content-type: application/json' \
+   --data '[
+   {
+   "orderId": "bfc5b215-29b6-4988-8a1f-08423f0acdf1",
+   "transactionId": "8e7ed790-08f8-4e7c-bdbe-f87a9c4a2bbc",
+   "customerEmail": "",
+   "shippingAddress": "123 Main St, Springfield, USA",
+   "totalAmount": 99.99,
+   "paymentMethod": "CREDIT_CARD"
+   },
+   {
+   "orderId": "bfc5b215-29b6-4988-8a1f-08423f0acdf2",
+   "transactionId": "8e7ed790-08f8-4e7c-bdbe-f87a9c4a2bbb",
+   "customerEmail": "",
+   "shippingAddress": "123 Main St, Springfield, USA",
+   "totalAmount": 100,
+   "paymentMethod": "CASH"
+   }
+   ]'
    ```
+
+### Running Tests
+
+``` bash
+# Run only notifications topic tests
+mvn test -Dgroups="unit-test,notifications-topic"
+mvn test -Dgroups="integration-test,notifications-topic"
+
+# Run only payments topic tests
+mvn test -Dgroups="unit-test,payments-topic"
+mvn test -Dgroups="integration-test,payments-topic"
+
+# Run only create-order tests
+mvn test -Dgroups="unit-test,create-order"
+mvn test -Dgroups="integration-test,create-order"
+
+# Run all tests
+mvn test
+```
+
+### Log File Information
+
+The application generates logs to help monitor and debug its behavior. <br>
+Logs are written to a file located at `logs/app.log`. The log file is configured to reset daily, ensuring it does not
+grow indefinitely. This is achieved through log rotation, which overwrites the log file every day. Additionally, the log
+file size can be limited to prevent excessive disk usage.

@@ -31,26 +31,6 @@ public class OrderController {
         this.eventProducer = eventProducer;
     }
 
-//    @PostMapping("/send-message")
-//    public ResponseEntity<String> sendMessage(@RequestBody MessageDto messageDto) {
-//        eventProducer.sendMessage(messageDto.getTopic(),
-//                messageDto.getKey(),
-//                messageDto.getValue());
-//        return ResponseEntity.ok("Message sent to Kafka topic: " + messageDto.getTopic());
-//    }
-//
-//    @PostMapping("/send-messages")
-//    public ResponseEntity<String> sendMessages(@RequestBody List<MessageDto> messages) {
-
-    /// /        messages.forEach(
-    /// /                message -> eventProducer.sendMessage(
-    /// /                        message.getTopic(),
-    /// /                        message.getKey(),
-    /// /                        message.getValue())
-    /// /        );
-//        eventProducer.sendMessage(messages.get(0).getTopic(), messages.get(0).getKey(), messages.get(0).getValue());
-//        return ResponseEntity.ok("Message(s) sent to Kafka topic(s)");
-//    }
     @PostMapping("/send/notification-topic")
     public ResponseEntity<String> sendToNotificationTopic(@RequestBody List<OrderDto> orders) {
         orders.forEach(
@@ -77,13 +57,6 @@ public class OrderController {
     public ResponseEntity<List<OrderDto>> createOrder(@RequestBody List<OrderDto> orders) {
         sendToNotificationTopic(orders);
         sendToPaymentTopic(orders);
-//        String key = UUID.randomUUID().toString();
-//        eventProducer.sendMessage(notificationTopic, key, orderDto);
-//        log.info("Message sent to topic: " + notificationTopic);
-
-//        List<MessageDto> paymentMessages = orders.stream().map(order -> new MessageDto(paymentTopic, UUID.randomUUID().toString(), order.toString())).toList();
-//        sendMessages(paymentMessages);
-//        log.info("Message sent to topic: " + paymentTopic);
 
         return ResponseEntity.ok(orders);
     }
