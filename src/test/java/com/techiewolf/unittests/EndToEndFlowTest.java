@@ -14,18 +14,12 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Tag("e2e-unit-test")
+@Tag("e2e-test")
 @Tag("unit-test")
 public class EndToEndFlowTest extends BaseKafkaTest {
 
     private static final CountDownLatch latch = new CountDownLatch(3);
     private static final Map<String, String> consumedMessages = new ConcurrentHashMap<>();
-
-    @KafkaListener(topics = MESSAGE_TOPIC, groupId = "e2e-test-group")
-    public void listenMessageTopic(String payload) {
-        consumedMessages.put(MESSAGE_TOPIC, payload);
-        latch.countDown();
-    }
 
     @KafkaListener(topics = NOTIFICATION_TOPIC, groupId = "e2e-test-group")
     public void listenNotificationTopic(String payload) {
@@ -33,9 +27,9 @@ public class EndToEndFlowTest extends BaseKafkaTest {
         latch.countDown();
     }
 
-    @KafkaListener(topics = AUDIT_TOPIC, groupId = "e2e-test-group")
-    public void listenAuditTopic(String payload) {
-        consumedMessages.put(AUDIT_TOPIC, payload);
+    @KafkaListener(topics = PAYMENT_TOPIC, groupId = "e2e-test-group")
+    public void listenPaymentTopic(String payload) {
+        consumedMessages.put(PAYMENT_TOPIC, payload);
         latch.countDown();
     }
 
@@ -45,18 +39,16 @@ public class EndToEndFlowTest extends BaseKafkaTest {
         String flowId = UUID.randomUUID().toString();
 
         // Send test messages
-        kafkaTemplate.send(MESSAGE_TOPIC, generateTestPayload("CREATE", flowId));
         kafkaTemplate.send(NOTIFICATION_TOPIC, generateTestPayload("NOTIFY", flowId));
-        kafkaTemplate.send(AUDIT_TOPIC, generateTestPayload("AUDIT", flowId));
+        kafkaTemplate.send(PAYMENT_TOPIC, generateTestPayload("PAYMENT", flowId));
 
         // Wait for all messages to be consumed
         assertTrue(latch.await(10, TimeUnit.SECONDS));
 
         // Verify all messages were processed
-        assertEquals(3, consumedMessages.size());
-        assertTrue(consumedMessages.get(MESSAGE_TOPIC).contains(flowId));
+        assertEquals(2, consumedMessages.size());
         assertTrue(consumedMessages.get(NOTIFICATION_TOPIC).contains(flowId));
-        assertTrue(consumedMessages.get(AUDIT_TOPIC).contains(flowId));
+        assertTrue(consumedMessages.get(PAYMENT_TOPIC).contains(flowId));
     }
 
     private String generateTestPayload(String action, String uuid) {

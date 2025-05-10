@@ -14,9 +14,8 @@ import java.util.UUID;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class BaseKafkaTest {
 
-    protected static final String MESSAGE_TOPIC = "message-topic";
-    protected static final String NOTIFICATION_TOPIC = "notification-topic";
-    protected static final String AUDIT_TOPIC = "audit-topic";
+    protected static final String NOTIFICATION_TOPIC = "notifications";
+    protected static final String PAYMENT_TOPIC = "payments";
     @Autowired
     protected KafkaTemplate<String, String> kafkaTemplate;
 
@@ -25,10 +24,10 @@ public abstract class BaseKafkaTest {
         return String.format("""
                 {
                     "timestamp": "%s",
-                    "userId": "user-" + (long) (Math.random() * 1_000_000_0000L),
+                    "userId": "user-%s",
                     "action": "%s",
                     "entity": "order",
                     "entityId": "%s"
-                }""", Instant.now(), action, uuid);
+                }""", Instant.now(), uuid, action, uuid);
     }
 }

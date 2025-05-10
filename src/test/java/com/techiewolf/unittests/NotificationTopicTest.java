@@ -21,7 +21,7 @@ public class NotificationTopicTest extends BaseKafkaTest {
 
     @Test
     public void testSingleMessage() throws Exception {
-        String payload = generateTestPayload("CREATE");
+        String payload = generateTestPayload("NOTIFY");
         kafkaTemplate.send(NOTIFICATION_TOPIC, payload);
 
         await().atMost(5, TimeUnit.SECONDS)
