@@ -9,18 +9,13 @@ import org.springframework.stereotype.Service;
 public class MessageConsumer {
     private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
 
-    @KafkaListener(topics = "${app.kafka.topics.message-topic}", groupId = "my-group")
-    public void consumeMessage(String message) {
-        logger.info("Received message: {}", message);
-    }
-
-    @KafkaListener(topics = "${app.kafka.topics.notification-topic}", groupId = "my-group")
+    @KafkaListener(topics = "${app.kafka.topics.notification-topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeNotification(String notification) {
         logger.info("Received notification: {}", notification);
     }
 
-    @KafkaListener(topics = "${app.kafka.topics.audit-topic}", groupId = "my-group")
-    public void consumeAuditLog(String auditLog) {
-        logger.info("Received audit log: {}", auditLog);
+    @KafkaListener(topics = "${app.kafka.topics.payment-topic}", groupId = "${spring.kafka.consumer.group-id}")
+    public void consumePayment(String payment) {
+        logger.info("Received payment: {}", payment);
     }
 }

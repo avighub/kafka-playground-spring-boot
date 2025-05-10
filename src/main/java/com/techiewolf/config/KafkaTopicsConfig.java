@@ -8,22 +8,11 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaTopicsConfig {
-    @Value("${app.kafka.topics.message-topic}")
-    private String messageTopic;
-
     @Value("${app.kafka.topics.notification-topic}")
     private String notificationTopic;
 
-    @Value("${app.kafka.topics.audit-topic}")
-    private String auditTopic;
-
-    @Bean
-    public NewTopic messageTopic() {
-        return TopicBuilder.name(messageTopic)
-                .partitions(1)
-                .replicas(1)
-                .build();
-    }
+    @Value("${app.kafka.topics.payment-topic}")
+    private String paymentTopic;
 
     @Bean
     public NewTopic notificationTopic() {
@@ -34,8 +23,8 @@ public class KafkaTopicsConfig {
     }
 
     @Bean
-    public NewTopic auditTopic() {
-        return TopicBuilder.name(auditTopic)
+    public NewTopic paymentTopic() {
+        return TopicBuilder.name(paymentTopic)
                 .partitions(1)
                 .replicas(1)
                 .build();
