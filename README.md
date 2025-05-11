@@ -6,21 +6,17 @@
 2. Install dependencies
    ```bash
    cd <project-directory>
-   maven install
+   mvn clean package -DskipTests
    ```
 3. Setup services via docker
    ```bash
-   docker compose up -d # Start services
+   docker-compose up --build
     ```
 4. Access the application
     1. Access Confluent Control Center UI at: http://localhost:9021
     2. You might not see any topics created yet in the UI. This is because the topics are created dynamically when the
        application starts.
-5. Run Spring boot app ( Once done you can see the topics created in the UI )
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-6. Access the application API
+5. Access the application API
     1. Create Order(s)
    ``` bash 
     curl --request POST \
