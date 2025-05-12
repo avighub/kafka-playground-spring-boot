@@ -10,7 +10,7 @@
    ```
 3. Setup services via docker
    ```bash
-   docker-compose up --build
+   docker compose up --build
     ```
 4. Access the application
     1. Access Confluent Control Center UI at: http://localhost:9021
