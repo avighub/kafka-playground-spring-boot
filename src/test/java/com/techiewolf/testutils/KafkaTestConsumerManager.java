@@ -22,14 +22,10 @@ public class KafkaTestConsumerManager {
     }
 
     public KafkaConsumer<String, String> createNotificationConsumer(String offsetReset) {
-        KafkaConsumer<String, String> consumer = KafkaUtils.createConsumer(bootstrapServers, "notifications-test-group", offsetReset);
-        KafkaUtils.subscribeToTopic(consumer, notificationTopic);
-        return consumer;
+        return createAndSubscribeConsumer(bootstrapServers, "notifications-test-group", offsetReset);
     }
 
     public KafkaConsumer<String, String> createPaymentsConsumer(String offsetReset) {
-        KafkaConsumer<String, String> consumer = KafkaUtils.createConsumer(bootstrapServers, "payments-test-group", offsetReset);
-        KafkaUtils.subscribeToTopic(consumer, paymentTopic);
-        return consumer;
+        return createAndSubscribeConsumer(bootstrapServers, "payments-test-group", offsetReset);
     }
 }
