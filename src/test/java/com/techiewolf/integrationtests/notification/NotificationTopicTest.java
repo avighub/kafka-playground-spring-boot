@@ -2,6 +2,7 @@ package com.techiewolf.integrationtests.notification;
 
 import com.techiewolf.dto.OrderDto;
 import com.techiewolf.testutils.APIUtils;
+import com.techiewolf.testutils.KafkaTestConsumerManager;
 import com.techiewolf.testutils.KafkaUtils;
 import io.restassured.response.Response;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -17,17 +18,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class NotificationTopicTest {
-    private static final String bootstrapServers = "localhost:9092";
-    private static final String topic = "notifications";
     private static KafkaConsumer<String, String> notificationConsumer;
     @Autowired
     private APIUtils apiUtils;
+    @Autowired
+    private KafkaTestConsumerManager kafkaTestConsumerManager;
 
     @BeforeAll
-    public static void setUp() {
+    public static void setUp(@Autowired KafkaTestConsumerManager kafkaTestConsumerManager) {
         String offsetReset = "latest";
-        notificationConsumer = KafkaUtils.createConsumer(bootstrapServers, "notification-test-group", offsetReset);
-        KafkaUtils.subscribeToTopic(notificationConsumer, topic);
+        notificationConsumer = kafkaTestConsumerManager.createNotificationConsumer(offsetReset);
     }
 
     @AfterAll

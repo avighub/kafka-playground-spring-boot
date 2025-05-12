@@ -2,6 +2,7 @@ package com.techiewolf.integrationtests.createorder;
 
 import com.techiewolf.dto.OrderDto;
 import com.techiewolf.testutils.APIUtils;
+import com.techiewolf.testutils.KafkaTestConsumerManager;
 import com.techiewolf.testutils.KafkaUtils;
 import io.restassured.response.Response;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -17,24 +18,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class CreateOrderTests {
-
-    private static final String bootstrapServers = "localhost:9092";
-    private static final String notificationsTopic = "notifications";
-    private static final String paymentsTopic = "payments";
     private static KafkaConsumer<String, String> notificationConsumer;
     private static KafkaConsumer<String, String> paymentConsumer;
     @Autowired
     private APIUtils apiUtils;
+    @Autowired
+    private KafkaTestConsumerManager kafkaTestConsumerManager;
 
     @BeforeAll
-    public static void setUp() {
+    public static void setUp(@Autowired KafkaTestConsumerManager kafkaTestConsumerManager) {
         String offsetReset = "latest";
-        notificationConsumer = KafkaUtils.createConsumer(bootstrapServers, "notification-test-group", offsetReset);
-        paymentConsumer = KafkaUtils.createConsumer(bootstrapServers, "payment-test-group", offsetReset);
-
-        // Subscribe to all topics
-        KafkaUtils.subscribeToTopic(notificationConsumer, notificationsTopic);
-        KafkaUtils.subscribeToTopic(paymentConsumer, paymentsTopic);
+        notificationConsumer = kafkaTestConsumerManager.createNotificationConsumer(offsetReset);
+        paymentConsumer = kafkaTestConsumerManager.createPaymentsConsumer(offsetReset);
     }
 
     @AfterAll

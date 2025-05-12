@@ -16,8 +16,6 @@ import java.util.Properties;
 
 public final class KafkaUtils {
     private static final Logger log = LoggerFactory.getLogger(KafkaUtils.class);
-    private final String bootstrapServers = "localhost:9092";
-    private final String groupId = "test-group";
 
     private KafkaUtils() {
     }
